@@ -45,7 +45,7 @@ public class Matrix {
         }
     }
 
-    public Matrix sum(Matrix b) {
+    public Matrix sum(Matrix b) throws ArrayIndexOutOfBoundsException{
         if (!this.isCorrect(b.getSize())) return null;
 
         Complex[][] data = new Complex[size][size];
@@ -59,7 +59,7 @@ public class Matrix {
         return new_Matrix;
     }
 
-    public Matrix sub(Matrix b) {
+    public Matrix sub(Matrix b) throws ArrayIndexOutOfBoundsException{
         if (!this.isCorrect(b.getSize())) return null;
 
         Complex[][] data = new Complex[size][size];
@@ -73,7 +73,7 @@ public class Matrix {
         return new_Matrix;
     }
 
-    public Matrix mul(Matrix b){
+    public Matrix mul(Matrix b) throws ArrayIndexOutOfBoundsException{
         if (!this.isCorrect(b.getSize())) return null;
 
 
@@ -92,7 +92,7 @@ public class Matrix {
         return new_Matrix;
     }
 
-    public Matrix transponse(){
+    public Matrix transponse() throws ArrayIndexOutOfBoundsException{
 
         Complex[][] data = new Complex[size][size];
         for (int i = 0; i < size; i++) {
@@ -106,20 +106,42 @@ public class Matrix {
         return new_Matrix;
     }
 
-    public Complex determinate()
-    {
+    public Complex determinate(Complex[][] matrix) throws ArrayIndexOutOfBoundsException{
+
         Complex calcResult = new Complex();
+        if (matrix.length == 1) {
+            calcResult = matrix[0][0];
+        }
         if (matrix.length==2){
             calcResult = (matrix[0][0].mul(matrix[1][1])).sub(matrix[1][0].mul(matrix[0][1]));
         }
         else
-        {
+        /*{
             calcResult = (matrix[0][0].mul(matrix[1][1].mul(matrix[2][2]))).sum(matrix[0][1].mul(matrix[1][2].mul(matrix[2][0])))
                          .sum(matrix[0][2].mul(matrix[1][0].mul(matrix[2][1]))).sub(matrix[0][2].mul(matrix[1][1].mul(matrix[2][0])))
                                  .sub(matrix[0][1].mul(matrix[1][0].mul(matrix[2][2]))).sub(matrix[0][0].mul(matrix[1][2].mul(matrix[2][1])));
+        }*/ {
+            for (int i = 0; i < matrix[0].length; i++) {
+                Complex[][] temp = new Complex[matrix.length - 1][matrix[0].length - 1];
+                for (int j = 1; j < matrix.length; j++) {
+                    for (int k = 0; k < matrix[0].length; k++) {
+
+                        if (k < i) {
+                            temp[j - 1][k] = matrix[j][k];
+                        } else if (k > i) {
+                            temp[j - 1][k - 1] = matrix[j][k];
+                        }
+                    }
+                }
+                Complex minor = determinate(temp).mul(matrix[0][i].mul(new Complex(Math.pow(-1, i))));
+                calcResult = calcResult.sum(minor);
+            }
         }
         return calcResult;
 
+    }
+    public Complex determinate() throws ArrayIndexOutOfBoundsException  {
+        return this.determinate(matrix);
     }
 
 
