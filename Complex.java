@@ -43,7 +43,7 @@ public class Complex {
                 this.image * second_num.getReal() + this.real * second_num.getImage());
     }
 
-    public Complex div(Complex second_num) {
+    public Complex div(Complex second_num) throws ArithmeticException{
         return new Complex((this.real * second_num.getReal() + this.image * second_num.getImage()) /
                 (second_num.getReal() * second_num.getReal() + second_num.getImage() * second_num.getImage()),
                 (this.image * second_num.getReal() - this.real * second_num.getImage()) /
